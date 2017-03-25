@@ -1,10 +1,9 @@
 (function(){
-  function SongPlayer() {
+  function SongPlayer(Fixtures) {
     var SongPlayer = {};
-    /**
-    * @desc initialize currentSong var to be null
-    */
-    var currentSong = null; //sets up currentSong var
+    var currentAlbum = Fixtures.getAlbum();
+
+    
     /**
     * @desc Buzz object audio file
     * @type {Object}
@@ -19,7 +18,7 @@
     var setSong = function(song) { //private method
       if (currentBuzzObject) {
         currentBuzzObject.stop();
-        currentSong.playing = null;
+        SongPlayer.currentSong.playing = null;
       }
 
       currentBuzzObject = new buzz.sound(song.audioUrl, {
@@ -27,12 +26,12 @@
         preload: true
       });
 
-      currentSong = song;
+      SongPlayer.currentSong = song;
     };
 
     /**
     * @desc playSong plays current Buzz object
-    @function playSong
+    * @function playSong
     * @param {object} song
     */
     var playSong = function(song){
@@ -40,12 +39,24 @@
       song.playing = true;
     };
 
-    //public method
-    SongPlayer.play = function(song) { //object. Question: Can I do this.play = function(song) instead of SongPlayer.play?
-        if (currentSong !== song) { //if currently playing song is not the song that is chosen
+    var getSongIndex = function(song) {
+        return currentAlbum.songs.indexOf(song);
+    };
+      
+      
+    /**
+    * @desc initialize SongPlayer.currentSong var to be null
+    */
+    SongPlayer.currentSong = null; //sets up SongPlayer.currentSong as a public variable
+      
+      
+      //public method
+    SongPlayer.play = function(song) { 
+        song = song || SongPlayer.currentSong;
+        if (SongPlayer.currentSong !== song) { //if currently playing song is not the song that is chosen
             setSong(song);
             playSong(song);
-        } else if (currentSong === song) { //else if we are hovering on song #2 and clicks song#2 (2 possibility: is song#2 playing? is song#2 paused?)
+        } else if (SongPlayer.currentSong === song) { //else if we are hovering on song #2 and clicks song#2 (2 possibility: is song#2 playing? is song#2 paused?)
           if (currentBuzzObject.isPaused()) { //if it is paused, then play it
             playSong(song);
           }
@@ -54,14 +65,29 @@
 
     //public method
     SongPlayer.pause = function(song) {
-      currentBuzzObject.pause();
-      song.playing = false;
+        song = song || SongPlayer.currentSong;
+        currentBuzzObject.pause();
+        song.playing = false;
     }
+    
+    SongPlayer.previous = function() {
+     var currentSongIndex = getSongIndex(SongPlayer.currentSong);
+     currentSongIndex--;
+        
+        if (currentSongIndex < 0) {
+         currentBuzzObject.stop();
+         SongPlayer.currentSong.playing = null;
+        } else {
+         var song = currentAlbum.songs[currentSongIndex];
+         setSong(song);
+         playSong(song);
+        }
+    };
 
     return SongPlayer;
   }
 
   angular
     .module('blocJams')
-    .factory('SongPlayer', SongPlayer);
+    .factory('SongPlayer', ['Fixtures', SongPlayer]);
 })();

@@ -1,0 +1,21 @@
+{
+  "name": "bloc-jams-angular",
+  "version": "1.0.0",
+  "description": "bloc",
+  "main": "index.js",
+  "dependencies": {},
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/michael2779/bloc-jams-angular.git"
+  },
+  "author": "mly",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/michael2779/bloc-jams-angular/issues"
+  },
+  "homepage": "https://github.com/michael2779/bloc-jams-angular#readme"
+}
